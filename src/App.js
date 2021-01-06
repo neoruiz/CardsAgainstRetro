@@ -14,7 +14,7 @@ const Card = ({ socket, text, type, id, playable, onClick, style, pick, owner, w
     }
     }
   >
-  {text.map(t => (<div style={{ padding: '4px 0px' }}>{decodeEntities(t)}</div>))}
+  {text.map(t => (<div style={{ padding: '4px 0px' }} dangerouslySetInnerHTML={{__html: t}}></div>))}
   {pick && <div className="alignBottom">Pick {pick}</div>}
   {owner && <div className="alignBottom">{owner}</div>}
   </div>);
@@ -40,7 +40,7 @@ const Roster = ({ roster, self, board }) => {
 const Hand = ({ hand, self, board, playFn }) => {
   return (<div className="section dark">
     <h3>Hand</h3>
-    <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', maxWidth: '700px', margin: '0 auto', opacity: self.id === board.judge ? 0.5 : 1 }}>
+    <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', margin: '0 auto', opacity: self.id === board.judge ? 0.5 : 1 }}>
       {hand.map((card, index) => (<Card key={card} text={[card]} id={index} onClick={playFn} pickable={self.id !== board.judge} style={{ background: '#FFF', color: '#000', cursor: 'pointer' }} />))}
     </div>
   </div>);
@@ -181,7 +181,7 @@ class App extends Component {
       <div className="App">
         <a style={{ textDecoration: 'none' }} href="/">
           <header className="App-header">
-            <div className="title">Cards Against Retrospective</div>
+            <div className="title">Cards Against Retrospective - PRM EDITION</div>
           </header>
         </a>
         <div className="Game">

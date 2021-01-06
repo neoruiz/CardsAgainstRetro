@@ -31,14 +31,14 @@
 }
 
 .cards {
-  background: #FFF;
+  background: #FFFFFF;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, .5);
   margin: 5px;
   padding: 1em;
   text-align: left;
-  height: 140px;
-  width: 100px;
+  min-height: 167px;
+  width: 220px;
   display: block;
   font-size: 11px;
   font-weight: 500;
@@ -197,4 +197,8 @@
   box-shadow: none;
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.cards img {
+  max-width: 100%;
 }

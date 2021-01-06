@@ -40,6 +40,8 @@ class Game {
     const { black, white } = this;
     shuffle(black);
     shuffle(white);
+    console.log("KISS");
+    console.log(white);
   }
 
   join(ws) {
