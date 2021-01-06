@@ -181,7 +181,7 @@ class App extends Component {
       <div className="App">
         <a style={{ textDecoration: 'none' }} href="/">
           <header className="App-header">
-            <div className="title">Pixels Against Humanity</div>
+            <div className="title">Cards Against Retrospective</div>
           </header>
         </a>
         <div className="Game">
