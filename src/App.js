@@ -210,7 +210,6 @@ class App extends Component {
             </div>
             <Hand hand={hand} self={self} board={board} playFn={this.handlePlay} />
           </div>) : <NameInput self={self} updateName={this.updateName} handleJoin={this.handleJoin} />}
-        <div className="section warning">An <a href="https://github.com/howardchung/pixelsagainsthumanity">open source</a> project.</div>
         </div>
       </div>
     );
