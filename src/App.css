@@ -200,5 +200,17 @@
 }
 
 .cards img {
-  max-width: 100%;
+	max-width: 100%;
+}
+
+/* LOGIN PAGE */
+.deck-selector {
+	width: 19em;
+    font-size: 1.2rem;
+    margin-bottom: .5rem;
+}
+
+.deck-selector select {
+    font-size: 1rem;
+    padding: .2rem;
 }

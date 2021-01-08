@@ -7,16 +7,16 @@ const Card = ({ socket, text, type, id, playable, onClick, style, pick, owner, w
   return (<div key={id}
     style={style}
     className={[winner ? 'winner' : '', pickable ? 'pickable' : '', 'cards'].filter(Boolean).join(' ')}
-    onClick={() => { 
+    onClick={() => {
       if (onClick) {
         onClick(id);
       }
     }
     }
   >
-  {text.map(t => (<div style={{ padding: '4px 0px' }} dangerouslySetInnerHTML={{__html: t}}></div>))}
-  {pick && <div className="alignBottom">Pick {pick}</div>}
-  {owner && <div className="alignBottom">{owner}</div>}
+    {text.map(t => (<div style={{ padding: '4px 0px' }} dangerouslySetInnerHTML={{ __html: t }}></div>))}
+    {pick && <div className="alignBottom">Pick {pick}</div>}
+    {owner && <div className="alignBottom">{owner}</div>}
   </div>);
 };
 
@@ -25,14 +25,14 @@ const Roster = ({ roster, self, board }) => {
     <h3>Players</h3>
     <div>
       {roster.map(p => (
-      <div key={p.name} style={{ display: 'flex', justifyContent: 'space-between', height: '30px', fontWeight: p.id === self.id ? 700 : 400 }}>
-        <div>
-          <span className={[board.judge === p.id ? 'winner' : 'standard', 'filled-circle'].filter(Boolean).join(' ')} style={{ background: p.readyState === 1 ? '#00ff00' : '#ff0000' }} />
-          {`${p.name}`}
-        </div>
-        <div>{p.score + 'p'}</div>
-        {/*<div>{p.status}</div>*/}
-      </div>))}
+        <div key={p.name} style={{ display: 'flex', justifyContent: 'space-between', height: '30px', fontWeight: p.id === self.id ? 700 : 400 }}>
+          <div>
+            <span className={[board.judge === p.id ? 'winner' : 'standard', 'filled-circle'].filter(Boolean).join(' ')} style={{ background: p.readyState === 1 ? '#00ff00' : '#ff0000' }} />
+            {`${p.name}`}
+          </div>
+          <div>{p.score + 'p'}</div>
+          {/*<div>{p.status}</div>*/}
+        </div>))}
     </div>
   </div>);
 };
@@ -50,16 +50,16 @@ const Board = ({ roster, board, self, selectFn }) => {
   return (
     <div className="section success" style={{ flexGrow: 1, width: '75%' }}>
       <h3>
-      Board
+        Board
       </h3>
       <div style={{ display: 'flex', flexWrap: 'wrap' }}>
         {board.black && board.black.text && <Card text={[board.black.text]} pick={board.black.pick} style={{ background: '#000', color: "#FFF" }} />}
         {board.whites.map((white, i) => (
           <Card
-            id={i} 
-            text={white.cards || []} 
-            owner={roster[white.playerIndex] && roster[white.playerIndex].name} 
-            onClick={selectFn} 
+            id={i}
+            text={white.cards || []}
+            owner={roster[white.playerIndex] && roster[white.playerIndex].name}
+            onClick={selectFn}
             style={{ background: '#FFF', color: '#000', cursor: 'pointer' }}
             winner={white.winner}
             pickable={self.id === board.judge}
@@ -71,58 +71,60 @@ const Board = ({ roster, board, self, selectFn }) => {
 const Deck = ({ board }) => {
   return (
     <div className="section light" style={{ textAlign: 'left', flex: 1 }}>
-    <h3>Deck</h3>
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between'}}>
-        <div>Black cards</div>
-        <div>{board.blackRemaining}</div>
+      <h3>Deck</h3>
+      <div>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <div>Black cards</div>
+          <div>{board.blackRemaining}</div>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <div>White cards</div>
+          <div>{board.whiteRemaining}</div>
+        </div>
+        {/*<Card text={board.black_remaining} style={{ background: '#000', color: "#FFF" }} />*/}
+        {/*<Card text={board.white_remaining} style={{ background: '#FFF' }} />*/}
       </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between'}}>
-        <div>White cards</div>
-        <div>{board.whiteRemaining}</div>
-      </div>
-      {/*<Card text={board.black_remaining} style={{ background: '#000', color: "#FFF" }} />*/}
-      {/*<Card text={board.white_remaining} style={{ background: '#FFF' }} />*/}
-    </div>
-  </div>);
+    </div>);
 };
 
 const GameStatus = ({ self, roster, board, handleAdvance }) => {
   const judge = roster.find(p => p.id === board.judge);
   return (
-  <div className="section dark" style={{ flex: 1}}>
-    <div style={{ textAlign: 'left' }}>
-      <h3>Status</h3>
-      {board.judge === 0 && <span>Waiting for game start (3 players minimum)...</span>}
-      {board.gameOver && <span>Game over.</span>}
-      {!board.gameOver && judge && board.selected && <span>{judge.name} picked the winner! Waiting for {judge.name} to advance to the next turn...</span>}
-      {!board.gameOver && judge && !board.selected && !board.allPlayersReady && <span>{judge.name} is judge. Waiting for players to play cards...</span>}
-      {!board.gameOver && judge && !board.selected && board.allPlayersReady && <span>All players played! Waiting for {judge.name} to pick the winner...</span>}
-    </div>
-  </div>);
+    <div className="section dark" style={{ flex: 1 }}>
+      <div style={{ textAlign: 'left' }}>
+        <h3>Status</h3>
+        {board.judge === 0 && <span>Waiting for game start (3 players minimum)...</span>}
+        {board.gameOver && <span>Game over.</span>}
+        {!board.gameOver && judge && board.selected && <span>{judge.name} picked the winner! Waiting for {judge.name} to advance to the next turn...</span>}
+        {!board.gameOver && judge && !board.selected && !board.allPlayersReady && <span>{judge.name} is judge. Waiting for players to play cards...</span>}
+        {!board.gameOver && judge && !board.selected && board.allPlayersReady && <span>All players played! Waiting for {judge.name} to pick the winner...</span>}
+      </div>
+    </div>);
 };
 
 const NameInput = ({ self, updateDeck, updateName, handleJoin, decks }) => (
   <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
     {self && self.msg && (<div className="section warning">{self && self.msg}</div>)}
-    <span style={{ color: '#FFF'}}>Pick A Deck: </span><select 
-      name="decks" 
-      id="decks"
-      onChange={updateDeck}>
-      {decks.map(( value, index ) => (
-        <option key={index} value={value}>
-          {value}
-        </option>
-      ))}
-    </select>
+    <div class="deck-selector">
+      <span style={{ color: '#FFF' }}>Pick A Deck: </span><select
+        name="decks"
+        id="decks"
+        onChange={updateDeck}>
+        {decks.map((value, index) => (
+          <option key={index} value={value}>
+            {value}
+          </option>
+        ))}
+      </select>
+    </div>
     <input
-      style={{ width: '20em', textAlign: 'center', height: '60px', borderRadius: '8px', fontSize: '18px' }} 
+      style={{ width: '20em', textAlign: 'center', height: '60px', borderRadius: '8px', fontSize: '18px' }}
       placeholder="Type a name to start/join the game"
       onChange={updateName}
       onKeyPress={(e) => e.key === 'Enter' && handleJoin()}
     />
     <button className="button" style={{ width: '23em', marginTop: '1em' }} onClick={handleJoin}>Join</button>
-    <span>Use this <a target="_blank" href='https://docs.google.com/spreadsheets/d/1I-VM0E-vMio1gxh9PTgrIggu_0l3H-Ui87GZ41yteoY/edit#gid=239260757'>spreadsheet</a> to create/update white cards topic. For any question or bug reports, please reach out to Neo.</span>
+    <span>Use this <a target="_blank" rel="noopener noreferrer" href='https://docs.google.com/spreadsheets/d/1I-VM0E-vMio1gxh9PTgrIggu_0l3H-Ui87GZ41yteoY/edit#gid=239260757'>spreadsheet</a> to create/update white cards topic. For any question or bug reports, please reach out to Neo.</span>
   </div>);
 
 class App extends Component {
@@ -139,17 +141,17 @@ class App extends Component {
       const response = await fetch(endpoint + "/decks");
       const body = await response.json();
       that.setState({ decks: body });
-      that.setState({ currentDeck: body[0]});
+      that.setState({ currentDeck: body[0] });
     }
 
     getDecks();
 
-    socket.onopen = function() {
+    socket.onopen = function () {
       if (urlName) {
-        this.updateName({ target: { value: urlName }}, this.handleJoin);
+        this.updateName({ target: { value: urlName } }, this.handleJoin);
       }
     }.bind(this);
-    socket.onmessage = function(msg) {
+    socket.onmessage = function (msg) {
       const json = JSON.parse(msg.data);
       if (json.type === 'roster') {
         this.setState({ roster: json.data });
@@ -164,7 +166,7 @@ class App extends Component {
       else if (json.type === 'join_ack') {
         this.setState({ self: json.data });
       } else if (json.type === 'join_refuse') {
-        this.setState({ self: { msg: 'A player with this name is already connected, please choose another' }});
+        this.setState({ self: { msg: 'A player with this name is already connected, please choose another' } });
       }
     }.bind(this);
     this.state = {
@@ -180,7 +182,7 @@ class App extends Component {
     };
   }
   updateName = (e) => {
-      this.setState({ currentName: e.target.value });
+    this.setState({ currentName: e.target.value });
   }
   updateDeck = (e) => {
     this.setState({ currentDeck: e.target.value });
@@ -213,7 +215,7 @@ class App extends Component {
         </a>
         <div className="Game">
           {self && self.id ? (<div>
-            {(<div style={{ display: 'flex', justifyContent: 'center'}}>
+            {(<div style={{ display: 'flex', justifyContent: 'center' }}>
               {/*
               <a style={{ textDecoration: 'none' }} className="button" href="/">
                 {'Create New Game'}
@@ -222,7 +224,7 @@ class App extends Component {
               <button className="button" onClick={this.handleAdvance} disabled={!((board.judge === 0 && roster.length >= 3) || (self.id === board.judge && board.selected))}>
                 {board.judge === 0 ? 'Start Game' : 'Next Turn'}
               </button>
-             </div>)}
+            </div>)}
             {board.judge === 0 && <div className="section primary">
               <h3>Invite your friends!</h3>
               <a href={inviteUrl} target="_blank">{inviteUrl}</a>
