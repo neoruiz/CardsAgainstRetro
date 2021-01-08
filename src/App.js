@@ -102,9 +102,19 @@ const GameStatus = ({ self, roster, board, handleAdvance }) => {
   </div>);
 };
 
-const NameInput = ({ self, updateName, handleJoin }) => (
+const NameInput = ({ self, updateDeck, updateName, handleJoin, decks }) => (
   <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
     {self && self.msg && (<div className="section warning">{self && self.msg}</div>)}
+    <span style={{ color: '#FFF'}}>Pick A Deck: </span><select 
+      name="decks" 
+      id="decks"
+      onChange={updateDeck}>
+      {decks.map(( value, index ) => (
+        <option key={index} value={value}>
+          {value}
+        </option>
+      ))}
+    </select>
     <input
       style={{ width: '20em', textAlign: 'center', height: '60px', borderRadius: '8px', fontSize: '18px' }} 
       placeholder="Type a name to start/join the game"
@@ -112,6 +122,7 @@ const NameInput = ({ self, updateName, handleJoin }) => (
       onKeyPress={(e) => e.key === 'Enter' && handleJoin()}
     />
     <button className="button" style={{ width: '23em', marginTop: '1em' }} onClick={handleJoin}>Join</button>
+    <span>Use this <a target="_blank" href='https://docs.google.com/spreadsheets/d/1I-VM0E-vMio1gxh9PTgrIggu_0l3H-Ui87GZ41yteoY/edit#gid=239260757'>spreadsheet</a> to create/update white cards topic. For any question or bug reports, please reach out to Neo.</span>
   </div>);
 
 class App extends Component {
@@ -121,6 +132,18 @@ class App extends Component {
     const urlName = urlState && urlState.name;
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const socket = new WebSocket(process.env.REACT_APP_SERVER_HOST || protocol + '//' + window.location.host);
+    const endpoint = process.env.REACT_APP_SERVER_ENDPOINT || 'http://localhost:8081';
+    const that = this;
+
+    async function getDecks() {
+      const response = await fetch(endpoint + "/decks");
+      const body = await response.json();
+      that.setState({ decks: body });
+      that.setState({ currentDeck: body[0]});
+    }
+
+    getDecks();
+
     socket.onopen = function() {
       if (urlName) {
         this.updateName({ target: { value: urlName }}, this.handleJoin);
@@ -145,6 +168,7 @@ class App extends Component {
       }
     }.bind(this);
     this.state = {
+      decks: [],
       roster: [],
       self: {},
       hand: [],
@@ -158,9 +182,12 @@ class App extends Component {
   updateName = (e) => {
       this.setState({ currentName: e.target.value });
   }
+  updateDeck = (e) => {
+    this.setState({ currentDeck: e.target.value });
+  }
   handleJoin = () => {
     const urlState = querystring.parse(window.location.search.substring(1));
-    this.state.socket.send(JSON.stringify({ type: 'join', room: urlState.room, name: this.state.currentName, gameType: 'Base' }));
+    this.state.socket.send(JSON.stringify({ type: 'join', room: urlState.room, name: this.state.currentName, gameType: 'Base', deck: this.state.currentDeck }));
   }
   handlePlay = (id) => {
     this.state.socket.send(JSON.stringify({ type: 'play', room: this.state.board.gameId, data: id }));
@@ -176,12 +203,12 @@ class App extends Component {
     // const urlName = urlState && urlState.name;
     const urlRoom = urlState && urlState.room;
     const inviteUrl = window.location.origin + "?room=" + urlRoom;
-    const { self, board, roster, hand } = this.state;
+    const { self, board, roster, hand, decks } = this.state;
     return (
       <div className="App">
         <a style={{ textDecoration: 'none' }} href="/">
           <header className="App-header">
-            <div className="title">Cards Against Retrospective - PRM EDITION</div>
+            <div className="title">Cards Against Retrospective</div>
           </header>
         </a>
         <div className="Game">
@@ -209,7 +236,7 @@ class App extends Component {
               <Board roster={roster} board={board} self={self} selectFn={this.handleSelect} />
             </div>
             <Hand hand={hand} self={self} board={board} playFn={this.handlePlay} />
-          </div>) : <NameInput self={self} updateName={this.updateName} handleJoin={this.handleJoin} />}
+          </div>) : <NameInput self={self} updateDeck={this.updateDeck} updateName={this.updateName} handleJoin={this.handleJoin} decks={decks} />}
         </div>
       </div>
     );

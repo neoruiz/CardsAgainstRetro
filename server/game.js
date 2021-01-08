@@ -1,9 +1,9 @@
 const WebSocket = require('ws');
-const cards = require('../data/cards.json');
+const defaultCards = require('../data/cards.json');
 // TODO track card stats
 
 class Game {
-  constructor(wss, gameId, type = 'Base') {
+  constructor(wss, gameId, type = 'Base', cards = defaultCards) {
     let deck;
     if (type === 'Expansion') {
       deck = {
@@ -40,8 +40,6 @@ class Game {
     const { black, white } = this;
     shuffle(black);
     shuffle(white);
-    console.log("KISS");
-    console.log(white);
   }
 
   join(ws) {
