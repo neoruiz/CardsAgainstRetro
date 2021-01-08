@@ -132,7 +132,7 @@ class App extends Component {
     const urlName = urlState && urlState.name;
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const socket = new WebSocket(process.env.REACT_APP_SERVER_HOST || protocol + '//' + window.location.host);
-    const endpoint = process.env.REACT_APP_SERVER_ENDPOINT || 'http://localhost:8081';
+    const endpoint = process.env.REACT_APP_SERVER_ENDPOINT || '';
     const that = this;
 
     async function getDecks() {
