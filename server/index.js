@@ -197,7 +197,7 @@ wss.on('connection', function connection(ws) {
                     Deck.Base.white.push(index);
                   });
   
-                  rooms.set(gameId, new Game(wss, gameId, json.gameType, Deck));
+                  rooms.set(gameId, new Game(wss, gameId, json.deck, json.gameType, Deck, ));
                   rooms.get(gameId).join(ws);
                   // Clean up this room after 6 hours
                   setTimeout(() => rooms.delete(gameId), 1000 * 60 * 60 * 6);

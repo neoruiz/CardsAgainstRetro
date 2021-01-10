@@ -22,7 +22,7 @@ const Card = ({ socket, text, type, id, playable, onClick, style, pick, owner, w
 
 const Roster = ({ roster, self, board }) => {
   return (<div className="section info" style={{ flexGrow: 1 }}>
-    <h3>Players</h3>
+    <h3 className="section-title">Players</h3>
     <div>
       {roster.map(p => (
         <div key={p.name} style={{ display: 'flex', justifyContent: 'space-between', height: '30px', fontWeight: p.id === self.id ? 700 : 400 }}>
@@ -38,8 +38,8 @@ const Roster = ({ roster, self, board }) => {
 };
 
 const Hand = ({ hand, self, board, playFn }) => {
-  return (<div className="section dark">
-    <h3>Hand</h3>
+  return (<div style={{ backgroundColor: '#FFF', borderRadius: '.5rem', marginTop: '1rem', paddingBottom: '1rem' }}>
+    <h3 style={{ textAlign: 'center', padding: '1rem 0', fontSize: '1.75rem', margin: 0, color: '#222' }}>Hand</h3>
     <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', margin: '0 auto', opacity: self.id === board.judge ? 0.5 : 1 }}>
       {hand.map((card, index) => (<Card key={card} text={[card]} id={index} onClick={playFn} pickable={self.id !== board.judge} style={{ background: '#FFF', color: '#000', cursor: 'pointer' }} />))}
     </div>
@@ -47,13 +47,24 @@ const Hand = ({ hand, self, board, playFn }) => {
 };
 
 const Board = ({ roster, board, self, selectFn }) => {
+  const judge = roster.find(p => p.id === board.judge);
   return (
     <div className="section success" style={{ flexGrow: 1, width: '75%' }}>
-      <h3>
-        Board
-      </h3>
+      <div>
+        <div className="section-title" style={{ flex: 1, color: '#FFF' }}>
+          <div style={{ textAlign: 'left' }}>
+            {/*<h3>Status</h3>*/}
+            {board.judge === 0 && <span>Waiting for game start (3 players minimum)...</span>}
+            {board.gameOver && <span>Game over.</span>}
+            {!board.gameOver && judge && board.selected && <span><strong>{judge.name} picked the winner!</strong> Waiting for {judge.name} to advance to the next turn...</span>}
+            {!board.gameOver && judge && !board.selected && !board.allPlayersReady && <span><strong>{judge.name} is judge.</strong> Waiting for players to play cards...</span>}
+            {!board.gameOver && judge && !board.selected && board.allPlayersReady && <span><strong>All players played!</strong> Waiting for {judge.name} to pick the winner...</span>}
+          </div>
+        </div>
+      </div>
+      
       <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-        {board.black && board.black.text && <Card text={[board.black.text]} pick={board.black.pick} style={{ background: '#000', color: "#FFF" }} />}
+        {board.black && board.black.text && <Card text={[board.black.text]} pick={board.black.pick} style={{ background: '#000', color: "#FFF", fontSize: "1rem" }} />}
         {board.whites.map((white, i) => (
           <Card
             id={i}
@@ -68,19 +79,22 @@ const Board = ({ roster, board, self, selectFn }) => {
     </div>);
 };
 
-const Deck = ({ board }) => {
+const Deck = ({ board, deckName }) => {
   return (
-    <div className="section light" style={{ textAlign: 'left', flex: 1 }}>
-      <h3>Deck</h3>
-      <div>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <div>Black cards</div>
-          <div>{board.blackRemaining}</div>
-        </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <div>White cards</div>
-          <div>{board.whiteRemaining}</div>
-        </div>
+    <div className="" style={{ textAlign: 'left', flex: 1 }}>
+      {/*<h3>Deck</h3>*/}
+      <div style={{ display: 'flex', justifyContent: 'center', color: '#737373', fontSize: '.75rem' }}>
+	  	<span style={{ display: 'flex', justifyContent: 'space-between', borderRight : '1px solid', marginRight: '.5rem', paddingRight: '.5rem' }}>
+          <span>{board.deckId} Deck</span>
+        </span>
+        <span style={{ display: 'flex', justifyContent: 'space-between', borderRight : '1px solid', marginRight: '.5rem', paddingRight: '.5rem' }}>
+          <span style={{ marginRight: '.5rem'}}>Black cards </span>
+          <span>{board.blackRemaining}</span>
+        </span>
+        <span style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <span style={{ marginRight: '.5rem'}}>White cards</span>
+          <span>{board.whiteRemaining}</span>
+        </span>
         {/*<Card text={board.black_remaining} style={{ background: '#000', color: "#FFF" }} />*/}
         {/*<Card text={board.white_remaining} style={{ background: '#FFF' }} />*/}
       </div>
@@ -90,41 +104,46 @@ const Deck = ({ board }) => {
 const GameStatus = ({ self, roster, board, handleAdvance }) => {
   const judge = roster.find(p => p.id === board.judge);
   return (
-    <div className="section dark" style={{ flex: 1 }}>
+    <div className="section" style={{ flex: 1, color: '#222' }}>
       <div style={{ textAlign: 'left' }}>
-        <h3>Status</h3>
+        {/*<h3>Status</h3>*/}
         {board.judge === 0 && <span>Waiting for game start (3 players minimum)...</span>}
         {board.gameOver && <span>Game over.</span>}
         {!board.gameOver && judge && board.selected && <span>{judge.name} picked the winner! Waiting for {judge.name} to advance to the next turn...</span>}
-        {!board.gameOver && judge && !board.selected && !board.allPlayersReady && <span>{judge.name} is judge. Waiting for players to play cards...</span>}
+        {!board.gameOver && judge && !board.selected && !board.allPlayersReady && <span><strong>{judge.name} is judge.</strong> Waiting for players to play cards...</span>}
         {!board.gameOver && judge && !board.selected && board.allPlayersReady && <span>All players played! Waiting for {judge.name} to pick the winner...</span>}
       </div>
     </div>);
 };
 
 const NameInput = ({ self, updateDeck, updateName, handleJoin, decks }) => (
-  <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
-    {self && self.msg && (<div className="section warning">{self && self.msg}</div>)}
-    <div class="deck-selector">
-      <span style={{ color: '#FFF' }}>Pick A Deck: </span><select
-        name="decks"
-        id="decks"
-        onChange={updateDeck}>
-        {decks.map((value, index) => (
-          <option key={index} value={value}>
-            {value}
-          </option>
-        ))}
-      </select>
+  <div>
+    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
+      {self && self.msg && (<div className="section warning">{self && self.msg}</div>)}
+      <img style={{ marginBottom: ".5rem" }} src="/logo.png" />
+      <input
+        style={{ width: '20em', textAlign: 'center', height: '45px', border: 'none', borderBottom: '2px solid', fontSize: '18px' }}
+        placeholder="Type a name to start/join the game"
+        onChange={updateName}
+        onKeyPress={(e) => e.key === 'Enter' && handleJoin()}
+      />
+      
+      <button className="button" style={{ width: '23em', marginTop: '1em', borderRadius: '.5rem' }} onClick={handleJoin}>Join</button>
+
+      <div className="deck-selector">
+        <span style={{ color: '#222' }}>Deck: </span><select
+          name="decks"
+          id="decks"
+          onChange={updateDeck}>
+          {decks.map((value, index) => (
+            <option key={index} value={value}>
+              {value}
+            </option>
+          ))}
+        </select>
+      </div>
     </div>
-    <input
-      style={{ width: '20em', textAlign: 'center', height: '60px', borderRadius: '8px', fontSize: '18px' }}
-      placeholder="Type a name to start/join the game"
-      onChange={updateName}
-      onKeyPress={(e) => e.key === 'Enter' && handleJoin()}
-    />
-    <button className="button" style={{ width: '23em', marginTop: '1em' }} onClick={handleJoin}>Join</button>
-    <span>Use this <a target="_blank" rel="noopener noreferrer" href='https://docs.google.com/spreadsheets/d/1I-VM0E-vMio1gxh9PTgrIggu_0l3H-Ui87GZ41yteoY/edit#gid=239260757'>spreadsheet</a> to create/update white cards topic. For any question or bug reports, please reach out to Neo.</span>
+    <div style={{ fontSize: ".75rem", textAlign: 'center' }}>Use this <a target="_blank" rel="noopener noreferrer" href='https://docs.google.com/spreadsheets/d/1I-VM0E-vMio1gxh9PTgrIggu_0l3H-Ui87GZ41yteoY/edit#gid=239260757'>spreadsheet</a> to create/update white cards topic. For any question or bug reports, please reach out to Neo.</div>
   </div>);
 
 class App extends Component {
@@ -215,27 +234,32 @@ class App extends Component {
         </a>
         <div className="Game">
           {self && self.id ? (<div>
-            {(<div style={{ display: 'flex', justifyContent: 'center' }}>
+            {(<div style={{ textAlign: 'center' }}>
               {/*
               <a style={{ textDecoration: 'none' }} className="button" href="/">
                 {'Create New Game'}
               </a>
               */}
-              <button className="button" onClick={this.handleAdvance} disabled={!((board.judge === 0 && roster.length >= 3) || (self.id === board.judge && board.selected))}>
+              <button className="button control-button" onClick={this.handleAdvance} disabled={!((board.judge === 0 && roster.length >= 3) || (self.id === board.judge && board.selected))}>
                 {board.judge === 0 ? 'Start Game' : 'Next Turn'}
               </button>
+              <div style={{ display: 'flex' }}>
+                <Deck board={board} deckName={ this.currentDeck } />
+              </div>
             </div>)}
             {board.judge === 0 && <div className="section primary">
               <h3>Invite your friends!</h3>
               <a href={inviteUrl} target="_blank">{inviteUrl}</a>
             </div>}
+            {/*
             <div style={{ display: 'flex' }}>
               <GameStatus roster={roster} board={board} handleAdvance={this.handleAdvance} self={self} />
               <Deck board={board} />
             </div>
+            */}
             <div style={{ display: 'flex', flexWrap: 'wrap' }}>
               <Roster roster={roster} self={self} board={board} />
-              <Board roster={roster} board={board} self={self} selectFn={this.handleSelect} />
+              <Board roster={roster} board={board} self={self} selectFn={this.handleSelect} handleAdvance={this.handleAdvance} />
             </div>
             <Hand hand={hand} self={self} board={board} playFn={this.handlePlay} />
           </div>) : <NameInput self={self} updateDeck={this.updateDeck} updateName={this.updateName} handleJoin={this.handleJoin} decks={decks} />}

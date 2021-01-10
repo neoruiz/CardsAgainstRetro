@@ -1,5 +1,8 @@
+body{
+	background: url(/email-pattern.png);
+}
+
 .App {
-  background-color: #222;
   padding: 10px;
   min-height: 100vh;
 }
@@ -60,7 +63,9 @@
 }
 
 .pickable:hover {
-  transform: scale(1.1);
+  transform: scale(1.2);
+  position: relative;
+  z-index: 1;
 }
 
 .alignBottom {
@@ -108,12 +113,20 @@
 }
 
 .info {
-  background: hsl(204, 86%, 53%);
-  color: #fff;
+	color: #505050;
+	box-shadow: none;
+	border-radius: .5rem;
+	padding-top: .5rem;
+}
+
+.section-title {
+	border-bottom: 1px solid;
+    margin: .5rem 0 1rem;
+    padding-bottom: .5rem;
 }
 
 .success {
-  background: hsl(141, 71%, 48%);
+  background: #475885;
   color: #fff;
 }
 
@@ -203,14 +216,52 @@
 	max-width: 100%;
 }
 
+.cards.black {
+	font-size: 1rem;
+}
+
+.control-button {
+	margin: 1rem 0 .5rem;
+	border-radius: .5rem;
+	font-weight: bold;
+}
+
+.control-button:not(:disabled) {
+	color: #FFF;
+	background: rgb(69, 185, 98);
+	animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+	transform: translate3d(0, 0, 0);
+	backface-visibility: hidden;
+	perspective: 1000px;
+}
+
 /* LOGIN PAGE */
 .deck-selector {
-	width: 19em;
-    font-size: 1.2rem;
-    margin-bottom: .5rem;
+	width: 27em;
+    font-size: .85rem;
+    margin-top: .5rem;
 }
 
 .deck-selector select {
-    font-size: 1rem;
-    padding: .2rem;
+    font-size: .85rem;
+	border: none;
+	border-bottom: 1px solid;
 }
+
+@keyframes shake {
+	10%, 90% {
+	  transform: translate3d(-1px, 0, 0);
+	}
+	
+	20%, 80% {
+	  transform: translate3d(2px, 0, 0);
+	}
+  
+	30%, 50%, 70% {
+	  transform: translate3d(-4px, 0, 0);
+	}
+  
+	40%, 60% {
+	  transform: translate3d(4px, 0, 0);
+	}
+  }

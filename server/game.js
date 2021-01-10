@@ -3,7 +3,7 @@ const defaultCards = require('../data/cards.json');
 // TODO track card stats
 
 class Game {
-  constructor(wss, gameId, type = 'Base', cards = defaultCards) {
+  constructor(wss, gameId, deckId, type = 'Base', cards = defaultCards) {
     let deck;
     if (type === 'Expansion') {
       deck = {
@@ -29,6 +29,7 @@ class Game {
       white_remaining: this.white.length,
       selected: false,
       picking: false,
+      deckId,
     };
     this.runTurn = this.runTurn.bind(this);
     this.updateBoard = this.updateBoard.bind(this);
